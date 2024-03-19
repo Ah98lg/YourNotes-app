@@ -1,6 +1,6 @@
-# Next.js Application README
+# YourNotes-App README
 
-Welcome to the README for [Your Next.js Application Name]! This document will guide you through the setup process, explain the project structure, and provide instructions on how to run the application.
+Welcome to the README for YourNotes-App! This document will guide you through the setup process, explain the project structure, and provide instructions on how to run the application.
 
 ## Setup Instructions
 
@@ -38,7 +38,7 @@ Open your browser and visit `http://localhost:3000` to view the application.
 
 The project structure for this Next.js application is organized as follows:
 
-notes-app/
+`notes-app/
 ├── public/
 │ └── icons/
 │ └── images/
@@ -57,7 +57,7 @@ notes-app/
 │ └── styles/
 │ ├── global.css
 │ └── ...
-└── ...
+└── ...`
 
 
 - **public:** Contains icons and images used in the program, accessible publicly.
