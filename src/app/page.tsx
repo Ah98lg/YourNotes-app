@@ -5,22 +5,13 @@ import AbsoluteCreationButton from "~/components/AbsoluteCreationButton";
 import backgroundImage from "../../public/note-board.jpg"
 import Note from "~/components/Note";
 import NoteCreationAndEditionModal from "~/components/NoteCreationAndEditionModal";
-import { type NotesDTO } from "./api/notes/dtos";
-
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  created_at: Date,
-  updated_at: Date
-}
+import { type NoteDTO } from "./api/notes/interfaces/dto";
 
 export default function NoteDashboard() {
 
-  const [notes, setNotes] = useState<NotesDTO[]>([])
+  const [notes, setNotes] = useState<NoteDTO[]>([])
   const [noteCreationModalOpen, setNoteCreationModalOpen] = useState<boolean>(false)
-  const [noteToEdit, setNoteToEdit] = useState<Note | null>(null)
+  const [noteToEdit, setNoteToEdit] = useState<NoteDTO | null>(null)
 
   function toggleNoteCreationModal() {
     setNoteCreationModalOpen(!noteCreationModalOpen)
@@ -38,7 +29,7 @@ export default function NoteDashboard() {
         throw new Error('Failed to fetch notes');
       }
       const data = await response.json();
-      setNotes(data.notes as NotesDTO[]);
+      setNotes(data.notes as NoteDTO[]);
     } catch (error) {
       console.error('Error fetching notes:', error);
     }
@@ -55,13 +46,14 @@ export default function NoteDashboard() {
         <NoteCreationAndEditionModal
           noteToEdit={noteToEdit}
           isOpen={noteCreationModalOpen}
+          refresh={getNotes}
           onClose={() => {
             toggleNoteCreationModal()
             noteToEdit && setNoteToEdit(null)
           }}
         />
       }
-      <header className="text-4xl font-bold mb-8 text-black p-12">YourNotes Dashboard</header>
+      <header className="text-4xl font-bold m-8 p-4 text-brown bg-light-brown rounded-lg	">YourNotes Dashboard</header>
 
       <div className="grid grid-cols-5 gap-8">
         {notes.map((note) => {

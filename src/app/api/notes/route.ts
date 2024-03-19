@@ -1,10 +1,15 @@
-import { type NotesDTO } from "./dtos";
-import { type NextApiRequest } from "next";
 import { db } from "~/server/db";
+import { type NoteDTO } from "./interfaces/dto";
 
-export async function GET() {
+
+/**
+ * Retrieves all notes from the database.
+ * @returns {Response} - Returns a response containing an array of notes.
+ * @throws {Response} - Returns an error response if notes couldn't be retrieved.
+ */
+export async function GET(): Promise<Response> {
     try {
-        const notes: NotesDTO[] = await db.note.findMany();
+        const notes: NoteDTO[] = await db.note.findMany();
 
         return Response.json({ notes }, { status: 200 });
     } catch (error: unknown) {
@@ -12,17 +17,22 @@ export async function GET() {
     }
 }
 
-export async function POST(req: Request) {
-    const { title, content } = await req.json() as NotesDTO;
 
-    console.log(req.body)
+/**
+ * Creates a new note in the database.
+ * @param {NextApiRequest} req - The request object containing the note data.
+ * @returns {Response} - Returns a response containing the newly created note.
+ * @throws {Response} - Returns an error response if the note couldn't be created or required fields are missing.
+ */
+export async function POST(req: Request): Promise<Response> {
+    const { title, content } = await req.json() as NoteDTO;
 
     try {
         if (!title || !content) {
             return Response.json({ message: `Please provide all the required fields` }, { status: 400 })
         }
 
-        const newNote: NotesDTO = await db.note.create({
+        const newNote: NoteDTO = await db.note.create({
             data: {
                 title,
                 content
@@ -35,15 +45,22 @@ export async function POST(req: Request) {
     }
 }
 
-export async function PUT(req: Request) {
-    const { id, title, content } = await req.json() as NotesDTO;
+
+/**
+ * Updates an existing note in the database.
+ * @param {NextApiRequest} req - The request object containing the note data.
+ * @returns {Response} - Returns a response containing the updated note.
+ * @throws {Response} - Returns an error response if the note couldn't be updated or required fields are missing.
+ */
+export async function PUT(req: Request): Promise<Response> {
+    const { id, title, content } = await req.json() as NoteDTO;
 
     try {
         if (!id || !title || !content) {
             return Response.json({ message: `Please provide all the required fields` }, { status: 400 })
         }
 
-        const updatedNote: NotesDTO = await db.note.update({
+        const updatedNote: NoteDTO = await db.note.update({
             where: { id },
             data: { title, content }
         })
@@ -54,7 +71,13 @@ export async function PUT(req: Request) {
     }
 }
 
-export async function DELETE(req: Request) {
+/**
+ * Deletes a note from the database.
+ * @param {NextApiRequest} req - The request object containing the note id.
+ * @returns {Response} - Returns a response confirming the deletion of the note.
+ * @throws {Response} - Returns an error response if the note couldn't be deleted or the id is missing.
+ */
+export async function DELETE(req: Request): Promise<Response> {
     const { id } = await req.json() as { id: string };
 
     console.log()

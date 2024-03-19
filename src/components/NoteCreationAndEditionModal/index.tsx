@@ -1,16 +1,11 @@
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface Note {
-    id: string;
-    title: string;
-    content: string;
-}
+import { type NoteDTO } from "~/app/api/notes/interfaces/dto";
 
 interface NoteCreationModalProps {
     isOpen: boolean;
-    noteToEdit?: Note | null;
+    noteToEdit?: NoteDTO | null;
     onClose: () => void;
+    refresh: () => void;
 }
 
 
@@ -20,8 +15,6 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
 
     const [titleError, setTitleError] = useState<string>("");
     const [contentError, setContentError] = useState<string>("");
-
-    const router = useRouter()
 
     function clearInputs() {
         setNoteTitle("")
@@ -37,6 +30,15 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
         }
     }, [props.noteToEdit])
 
+    useEffect(() => {
+        if (noteContent) {
+            setTitleError("")
+        }
+        if (noteTitle) {
+            setContentError("")
+        }
+    }, [noteContent, noteTitle])
+
     async function deleteNote(id: string) {
         try {
             const response = await fetch('/api/notes', {
@@ -50,7 +52,7 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                 throw new Error('Failed to delete note');
             }
 
-            router.refresh()
+            props.refresh()
             props.onClose()
 
         } catch (error) {
@@ -76,7 +78,8 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
         return isValid;
     }
 
-    async function createNote() {
+    async function createNote(event: React.FormEvent<HTMLFormElement>) {
+        event?.preventDefault()
         if (validateForm()) {
             try {
                 const response = await fetch('/api/notes', {
@@ -90,7 +93,7 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                     throw new Error('Failed to create note');
                 }
 
-                router.refresh()
+                props.refresh()
                 props.onClose()
 
             } catch (error) {
@@ -99,7 +102,8 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
         }
     }
 
-    async function updateNote() {
+    async function updateNote(event: React.FormEvent<HTMLFormElement>) {
+        event?.preventDefault()
         if (validateForm()) {
             try {
                 const response = await fetch('/api/notes', {
@@ -113,7 +117,7 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                     throw new Error('Failed to update note');
                 }
 
-                router.refresh()
+                props.refresh()
                 props.onClose()
 
             } catch (error) {
@@ -126,13 +130,13 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
             <div className="bg-postit-yellow p-8 rounded-xl w-96">
-                <form onSubmit={() => props.noteToEdit ? updateNote() : createNote()}>
+                <form onSubmit={(event) => props.noteToEdit ? updateNote(event) : createNote(event)}>
                     <h2 className="text-2xl font-bold mb-4 text-white">{props.noteToEdit ? `Edit note` : `Create a new note`}</h2>
                     <input
                         type="text"
                         maxLength={30}
-                        placeholder="Here goes your title..."
-                        className="w-full border-2 border-gray-200 p-2 rounded-lg mb-4 text-black"
+                        placeholder={`${titleError ? titleError : "Here goes your title..."}`}
+                        className={`w-full border-2 border-gray-200 p-2 rounded-lg mb-4 ${titleError ? 'placeholder-red text-red' : 'placeholder-gray text-black'}`}
                         onChange={(event) => {
                             setNoteTitle(event.target.value);
                         }}
@@ -141,8 +145,8 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                     />
                     <textarea
                         maxLength={100}
-                        placeholder="Write your note here..."
-                        className="w-full border-2 h-36 border-gray-200 p-2 rounded-lg mb-4 text-black resize-none"
+                        placeholder={`${contentError ? contentError : "Write your note here..."}`}
+                        className={`w-full border-2 h-36 border-red-200 p-2 rounded-lg mb-4 ${contentError ? 'placeholder-red text-red' : 'placeholder-gray text-black'} resize-none`}
                         value={noteContent}
                         onChange={(event) => {
                             setNoteContent(event.target.value);
@@ -156,14 +160,14 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                                 clearInputs();
                                 props.onClose();
                             }}
-                            className="text-white px-4 py-2 rounded-lg"
+                            className="text-white px-4 py-2 rounded-lg bg-gray"
                         >
                             Cancel
                         </button>
                         {props.noteToEdit && (
                             <button
                                 type="button"
-                                className="text-white px-4 py-2 rounded-lg"
+                                className="text-white px-4 py-2 rounded-lg bg-red"
                                 onClick={() => props.noteToEdit && deleteNote(props.noteToEdit.id)}
                             >
                                 Delete note
@@ -171,7 +175,7 @@ export default function NoteCreationAndEditionModal(props: NoteCreationModalProp
                         )}
                         <button
                             type="submit"
-                            className="text-white px-4 py-2 rounded-lg"
+                            className="text-white px-4 py-2 rounded-lg bg-green"
                         >
                             {props.noteToEdit ? `Edit note` : `Create note`}
                         </button>
