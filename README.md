@@ -15,16 +15,15 @@ Navigate into the project directory and install the necessary dependencies using
 
 `pnpm install`
 
+3. **Environment Variables:**
+To configure your database connection, create a `.env` file in the root of your project and add the following content:
 
-3. **Initialize Prisma:**
+`DATABASE_URL="postgresql://postgres:BIaZFn0ZQH0SAFdtnxlb@yournotes-db.cp2gk40608pt.sa-east-1.rds.amazonaws.com:5432"`
+
+4. **Initialize Prisma:**
 Initialize Prisma by running the following command and follow the prompts to set up your database connection:
 
 `npx prisma migrate dev --name initialize`
-
-4. **Environment Variables:**
-To configure your database connection, create a `.env` file in the root of your project and add the following content:
-
-`DATABASE_URL="file:./db.sqlite"`
 
 5. **Start the Development Server:**
 Once the dependencies are installed, start the development server to run the application locally.
