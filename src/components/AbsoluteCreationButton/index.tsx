@@ -7,10 +7,11 @@ interface AbsoluteCreationButtonProps {
 export default function AbsoluteCreationButton(props: AbsoluteCreationButtonProps) {
     return (
         <button
-            className="fixed bottom-4 right-4 w-20 h-20 bg-light-brown text-brown rounded-full flex items-center justify-center"
+            className="fixed bottom-2 right-2 md:bottom-8 md:right-8 w-12 h-12 md:w-20 md:h-20 bg-light-brown text-brown rounded-full flex items-center justify-center"
             onClick={props.onClick}
         >
-            <IoAdd size={60} />
+            <IoAdd size={48} />
         </button>
-    )
+    );
+
 }

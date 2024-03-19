@@ -37,25 +37,26 @@ export default function NoteDashboard() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center text-white bg-cover bg-center"
+      className="flex flex-col min-h-screen items-center text-white bg-cover bg-center bg-fixed"
       style={{
         backgroundImage: `url(${backgroundImage.src})`,
-        backgroundAttachment: 'fixed'
       }}>
-      {noteCreationModalOpen &&
+      {noteCreationModalOpen && (
         <NoteCreationAndEditionModal
           noteToEdit={noteToEdit}
           isOpen={noteCreationModalOpen}
           refresh={getNotes}
           onClose={() => {
-            toggleNoteCreationModal()
-            noteToEdit && setNoteToEdit(null)
+            toggleNoteCreationModal();
+            noteToEdit && setNoteToEdit(null);
           }}
         />
-      }
-      <header className="text-4xl font-bold m-8 p-4 text-brown bg-light-brown rounded-lg	">YourNotes Dashboard</header>
+      )}
+      <header className="text-4xl font-bold m-8 p-4 text-brown bg-light-brown rounded-lg text-center">
+        YourNotes Dashboard
+      </header>
 
-      <div className="grid grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
         {notes.map((note) => {
           return (
             <Note
@@ -63,11 +64,11 @@ export default function NoteDashboard() {
               title={note.title}
               content={note.content}
               onEdit={() => {
-                setNoteToEdit(note)
-                toggleNoteCreationModal()
+                setNoteToEdit(note);
+                toggleNoteCreationModal();
               }}
             />
-          )
+          );
         })}
       </div>
 
